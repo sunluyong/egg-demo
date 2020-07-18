@@ -6,4 +6,8 @@ module.exports = {
     enable: true,
     package: 'egg-view-handlebars',
   },
+  mysql: {
+    enable: true,
+    package: 'egg-mysql',
+  }
 };
