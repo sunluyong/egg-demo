@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户列表</title>
+  <style>
+    table {
+      width: 600px;
+      margin: 100px auto;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 10px;
+      border: solid 1px #f2f3f7;
+    }
+
+  </style>
+</head>
+
+<body>
+  <table>
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>用户名</td>
+        <td>用户配置</td>
+        <td>操作</td>
+      </tr>
+    </thead>
+    <tbody id="list">
+
+    </tbody>
+  </table>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $.get('/api/user/list', data => {
+      const { users, pages } = data;
+      const content = users.map(user => {
+        const { id, name, config } = user;
+        return `
+          <tr>
+            <td>${id}</td>
+            <td>${name}</td>
+            <td>${config}</td>
+            <td>
+              <input class="btn-delete" data-user-id="${id}" type="button" value="删除" />
+            </td>
+          </tr>
+        `;
+      });
+
+      $('#list').html(content);
+    });
+
+    // egg.js 会自动把 csrf token 写入 cookie 中
+    const _csrf = document.cookie.match(/csrfToken=(.+?)(?:;|$)/)[1];
+
+    $('#list').on('click', '.btn-delete', function (ev) {
+      const userId = $(this).data('user-id');
+
+      $.ajax({
+        url: `/api/user/${userId}`,
+        method: 'DELETE',
+        data: {
+          _csrf,
+        }
+      }).done(ret => {
+        alert('deleted!');
+      });
+    });
+  </script>
+</body>
+
+</html>

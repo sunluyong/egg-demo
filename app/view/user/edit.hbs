@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编辑用户信息</title>
+  <style>
+    form {
+      width: 600px;
+      margin: 100px auto;
+    }
+
+    .form-row {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: inline-block;
+      width: 80px;
+      vertical-align: top;
+    }
+
+    input[type="text"] {
+      display: inline-block;
+      width: 300px;
+    }
+
+    textarea {
+      display: inline-block;
+      width: 300px;
+      height: 100px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <form>
+    <input type="hidden" name="_csrf" value="{{csrf}}" />
+    <div class="form-row">
+      <label>用户 ID：</label>
+      <span id="user-id">{{userId}}</span>
+    </div>
+    <div class="form-row">
+      <label>用户名：</label>
+      <input id="user-name" type="text" name="name" />
+    </div>
+    <div class="form-row">
+      <label>用户配置：</label>
+      <textarea id="user-config" name="config"></textarea>
+    </div>
+    <div class="form-row">
+      <input id="btn-edit" type="button" value="更新用户信息" />
+    </div>
+  </form>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    const userId = $('#user-id').text();
+
+    $.get(`/api/user/${userId}`, data => {
+      const { name, config } = data.user;
+      $('#user-name').val(name);
+      $('#user-config').val(config);
+    });
+
+    $('#btn-edit').on('click', ev => {
+      $.ajax({
+        url: `/api/user/${userId}`,
+        method: 'PUT',
+        data: $('form').serialize(),
+      }).done(ret => {
+        alert('done!');
+      });
+    });
+  </script>
+</body>
+
+</html>
