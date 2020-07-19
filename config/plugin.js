@@ -7,7 +7,11 @@ module.exports = {
     package: 'egg-view-handlebars',
   },
   mysql: {
-    enable: true,
+    enable: false,
     package: 'egg-mysql',
+  },
+  sequelize: {
+    enable: true,
+    package: 'egg-sequelize',
   },
 };

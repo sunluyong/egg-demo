@@ -2,57 +2,96 @@
 
 const Service = require('egg').Service;
 
+function toInt(str) {
+  if (typeof str === 'number') return str;
+  if (!str) return str;
+  return parseInt(str, 10) || 0;
+}
+
 class User extends Service {
+
   async get(id) {
-    const user = await this.app.mysql.get('user', { id });
+    const user = await this.ctx.model.User.findByPk(id);
     return user;
   }
 
   async list(pageSize, pageNo, orderBy = 'id', order = 'ASC') {
-
-    let sql = 'select id, name, config from user ';
-    sql += 'where deleted = 0 ';
-    sql += 'order by ? ? ';
-    sql += 'limit ?,?;';
-
     const offset = pageSize * (pageNo - 1);
-    const users = await this.app.mysql.query(sql, [ orderBy, order, offset, pageSize ]);
 
-    const totalNumRow = await this.app.mysql.query('select count(id) as totalNum from user where deleted = 0;');
+    // const users = await this.ctx.model.User.findAll({
+    //   attributes: ['id', 'name', 'config'],
+    //   where: {
+    //     deleted: 0
+    //   },
+    //   order: [[orderBy, order],],
+    //   limit: toInt(pageSize),
+    //   offset
+    // });
+
+    // const total = await this.ctx.model.User.count({
+    //   where: {
+    //     id: {
+    //       [this.app.Sequelize.Op.eq]: 0,
+    //     }
+    //   }
+    // });
+
+    const { count, rows } = await this.ctx.model.User.findAndCountAll({
+      attributes: ['id', 'name', 'config'],
+      where: {
+        deleted: 0,
+      },
+      order: [[orderBy, order]],
+      limit: toInt(pageSize),
+      offset,
+    });
 
     return {
-      users,
+      users: rows,
       pages: {
         pageNo,
         pageSize,
-        total: totalNumRow[0].totalNum,
+        total: count,
       },
     };
   }
 
   async insert(user) {
-    const result = await this.app.mysql.insert('user', user);
-    return result;
+    const result = await this.ctx.model.User.create(user);
+
+    return {
+      insertId: result.dataValues.id,
+    };
   }
 
   async update(user) {
-    const result = await this.app.mysql.update('user', user);
-    return result;
+    const { id, ...attrs } = user;
+    const [, affectedRows] = await this.ctx.model.User.update(attrs, {
+      where: { id },
+      returning: true, // needed for affectedRows to be populated
+      plain: true, // makes sure that the returned instances are just plain objects
+    });
+
+    return { affectedRows };
   }
 
   // 软删除
   async delete(id) {
-    const result = await this.app.mysql.update('user', {
-      id,
-      deleted: 1,
+    const [, affectedRows] = await this.ctx.model.User.update({ deleted: 1 }, {
+      where: { id },
+      returning: true,
+      plain: true,
     });
-    return result;
+
+    return { affectedRows };
   }
 
   // 从表结构中移除
   async hardDelete(id) {
-    const result = await this.app.mysql.delete('user', { id });
-    return result;
+    const numAffectedRows = await this.ctx.model.User.destroy({
+      where: { id },
+    });
+    return numAffectedRows;
   }
 }
 

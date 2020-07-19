@@ -1,6 +1,6 @@
 {
   "name": "demo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "egg.js demo application",
   "private": true,
   "egg": {
@@ -10,7 +10,9 @@
     "egg": "^2.15.1",
     "egg-mysql": "^3.0.0",
     "egg-scripts": "^2.11.0",
-    "egg-view-handlebars": "^2.0.1"
+    "egg-sequelize": "^5.2.2",
+    "egg-view-handlebars": "^2.0.1",
+    "mysql2": "^2.1.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
