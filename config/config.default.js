@@ -26,15 +26,17 @@ module.exports = appInfo => {
     },
   };
 
-  config.mysql = {
-    client: {
-      host: 'localhost',
-      port: '3306',
-      user: 'sunluyong',
-      password: '123456',
-      database: 'demo',
+  config.sequelize = {
+    dialect: 'mysql',
+    host: 'localhost',
+    port: '3306',
+    user: 'sunluyong',
+    password: '123456',
+    database: 'demo',
+    define: {
+      // 锁定表名和模型名一致，不自动转为复数
+      freezeTableName: true,
     },
-    app: true,
   };
 
   // add your user config here
