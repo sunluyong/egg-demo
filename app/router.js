@@ -4,6 +4,7 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = app => {
+  // const cost = app.middleware.cost({ header: 'egg-cost' });
   // user api
   app.get('/api/user/list', 'api.user.list');
   app.get('/api/user/:id', 'api.user.get');
@@ -16,5 +17,6 @@ module.exports = app => {
   app.get('/user/edit/:id', 'user.edit');
   app.get('/user/list', 'user.list');
 
+  // app.get('/', cost, 'home.index');
   app.get('/', 'home.index');
 };
