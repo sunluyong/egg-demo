@@ -15,12 +15,6 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1594546444960_885';
 
-  // add your middleware config here
-  config.middleware = ['cost'];
-  // config.cost = {
-  //   header: 'egg-cost',
-  // };
-
   config.cost = {
     enable: true,
     ignore: /^\/api/,

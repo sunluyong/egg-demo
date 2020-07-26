@@ -17,6 +17,8 @@ module.exports = app => {
   app.get('/user/edit/:id', 'user.edit');
   app.get('/user/list', 'user.list');
 
+  app.get('/api/test', 'api.test.index');
+
   // app.get('/', cost, 'home.index');
   app.get('/', 'home.index');
 };
