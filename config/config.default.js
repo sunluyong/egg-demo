@@ -16,7 +16,16 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1594546444960_885';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = ['cost'];
+  // config.cost = {
+  //   header: 'egg-cost',
+  // };
+
+  config.cost = {
+    enable: true,
+    ignore: /^\/api/,
+    header: 'egg-cost',
+  }
 
   config.view = {
     defaultViewEngine: 'handlebars',
